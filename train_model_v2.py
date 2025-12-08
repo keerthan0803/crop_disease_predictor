@@ -16,11 +16,15 @@ tf.random.set_seed(42)
 # Configuration
 DATASET_PATH = r"plantvillage dataset\color"
 IMAGE_SIZE = 224
-BATCH_SIZE = 32
-EPOCHS = 30
+BATCH_SIZE = 64  # Increased for faster processing
+EPOCHS = 20  # Reduced epochs for faster training
 MODEL_SAVE_PATH = "crop_disease_model.h5"
 CLASSES_PATH = "classes.pkl"
 HISTORY_PATH = "training_history.json"
+
+# Disable TensorFlow warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+tf.get_logger().setLevel('ERROR')
 
 def create_data_generators():
     """
@@ -170,7 +174,10 @@ def train_model():
         validation_data=val_gen,
         validation_steps=validation_steps,
         callbacks=callbacks,
-        verbose=1
+        verbose=1,
+        workers=1,
+        use_multiprocessing=False,
+        max_queue_size=10
     )
     
     # Save training history
